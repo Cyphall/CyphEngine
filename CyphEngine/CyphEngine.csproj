@@ -1,0 +1,62 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<Platforms>x64</Platforms>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="JetBrains.Annotations" Version="2022.1.0" PrivateAssets="all"/>
+		<PackageReference Include="NAudio.Core" Version="2.0.0"/>
+		<PackageReference Include="NAudio.WinMM" Version="2.0.1"/>
+		<PackageReference Include="OpenTK.Core" Version="4.7.2"/>
+		<PackageReference Include="OpenTK.Graphics" Version="4.7.2"/>
+		<PackageReference Include="OpenTK.Mathematics" Version="4.7.2"/>
+		<PackageReference Include="OpenTK.OpenAL" Version="4.7.2"/>
+		<PackageReference Include="OpenTK.Windowing.GraphicsLibraryFramework" Version="4.7.2"/>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Update="ResourceFiles.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>ResourceFiles.resx</DependentUpon>
+		</Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Update="ResourceFiles.resx">
+			<Generator>ResXFileCodeGenerator</Generator>
+			<LastGenOutput>ResourceFiles.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Update="runtimes\**">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="$(SolutionDir)CyphEngineNative\CyphEngineNative.vcxproj">
+			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+		</ProjectReference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Include="$(SolutionDir)CyphEngineNative\bin\$(Platform)\$(Configuration)\CyphEngineNative.dll">
+			<Link>CyphEngineNative.dll</Link>
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<Visible>false</Visible>
+		</Content>
+		<Content Include="$(SolutionDir)CyphEngineNative\bin\$(Platform)\$(Configuration)\CyphEngineNative.pdb">
+			<Link>CyphEngineNative.pdb</Link>
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<Visible>false</Visible>
+		</Content>
+	</ItemGroup>
+
+</Project>

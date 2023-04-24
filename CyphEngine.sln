@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32421.90
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CyphEngine", "CyphEngine\CyphEngine.csproj", "{38E7B0AE-28AA-422F-9446-C128D4070A78}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleGame", "SampleGame\SampleGame.csproj", "{05824E95-2D7F-432E-B0C6-F7B3D66B1DC1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestGame", "TestGame\TestGame.csproj", "{99F97E26-416F-4410-A615-88F220FDC582}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sharpsteroids", "Sharpsteroids\Sharpsteroids.csproj", "{37FE2D40-65E5-49F9-9A70-32306C77476F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zelda", "Zelda\Zelda.csproj", "{1EEB4ACE-F6EC-44B6-A261-B0A8597152F5}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CyphEngineNative", "CyphEngineNative\CyphEngineNative.vcxproj", "{85ECAAFC-04DA-4504-A35E-D8B86790C43B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{38E7B0AE-28AA-422F-9446-C128D4070A78}.Debug|x64.ActiveCfg = Debug|x64
+		{38E7B0AE-28AA-422F-9446-C128D4070A78}.Debug|x64.Build.0 = Debug|x64
+		{38E7B0AE-28AA-422F-9446-C128D4070A78}.Release|x64.ActiveCfg = Release|x64
+		{38E7B0AE-28AA-422F-9446-C128D4070A78}.Release|x64.Build.0 = Release|x64
+		{05824E95-2D7F-432E-B0C6-F7B3D66B1DC1}.Debug|x64.ActiveCfg = Debug|x64
+		{05824E95-2D7F-432E-B0C6-F7B3D66B1DC1}.Debug|x64.Build.0 = Debug|x64
+		{05824E95-2D7F-432E-B0C6-F7B3D66B1DC1}.Release|x64.ActiveCfg = Release|x64
+		{05824E95-2D7F-432E-B0C6-F7B3D66B1DC1}.Release|x64.Build.0 = Release|x64
+		{99F97E26-416F-4410-A615-88F220FDC582}.Debug|x64.ActiveCfg = Debug|x64
+		{99F97E26-416F-4410-A615-88F220FDC582}.Debug|x64.Build.0 = Debug|x64
+		{99F97E26-416F-4410-A615-88F220FDC582}.Release|x64.ActiveCfg = Release|x64
+		{99F97E26-416F-4410-A615-88F220FDC582}.Release|x64.Build.0 = Release|x64
+		{37FE2D40-65E5-49F9-9A70-32306C77476F}.Debug|x64.ActiveCfg = Debug|x64
+		{37FE2D40-65E5-49F9-9A70-32306C77476F}.Debug|x64.Build.0 = Debug|x64
+		{37FE2D40-65E5-49F9-9A70-32306C77476F}.Release|x64.ActiveCfg = Release|x64
+		{37FE2D40-65E5-49F9-9A70-32306C77476F}.Release|x64.Build.0 = Release|x64
+		{1EEB4ACE-F6EC-44B6-A261-B0A8597152F5}.Debug|x64.ActiveCfg = Debug|x64
+		{1EEB4ACE-F6EC-44B6-A261-B0A8597152F5}.Debug|x64.Build.0 = Debug|x64
+		{1EEB4ACE-F6EC-44B6-A261-B0A8597152F5}.Release|x64.ActiveCfg = Release|x64
+		{1EEB4ACE-F6EC-44B6-A261-B0A8597152F5}.Release|x64.Build.0 = Release|x64
+		{85ECAAFC-04DA-4504-A35E-D8B86790C43B}.Debug|x64.ActiveCfg = Debug|x64
+		{85ECAAFC-04DA-4504-A35E-D8B86790C43B}.Debug|x64.Build.0 = Debug|x64
+		{85ECAAFC-04DA-4504-A35E-D8B86790C43B}.Release|x64.ActiveCfg = Release|x64
+		{85ECAAFC-04DA-4504-A35E-D8B86790C43B}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C17E9D2E-D29D-43B8-85D5-548C9120D1D4}
+	EndGlobalSection
+EndGlobal

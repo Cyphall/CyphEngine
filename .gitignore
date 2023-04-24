@@ -1,0 +1,11 @@
+.idea
+.vs
+.vscode
+
+bin
+obj
+
+*.Designer.cs
+*.DotSettings.user
+
+vcpkg
