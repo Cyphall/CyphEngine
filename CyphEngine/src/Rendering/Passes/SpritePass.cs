@@ -38,22 +38,22 @@ public class SpritePass
 		{
 			new VertexData
 			{
-				Position = new Vector2(-0.5f, -0.5f),
+				Position = new Vector2(-0.5f, 0.5f),
 				Uv = new Vector2(0, 0)
 			},
 			new VertexData
 			{
-				Position = new Vector2(-0.5f, 0.5f),
+				Position = new Vector2(-0.5f, -0.5f),
 				Uv = new Vector2(0, 1)
 			},
 			new VertexData
 			{
-				Position = new Vector2(0.5f, -0.5f),
+				Position = new Vector2(0.5f, 0.5f),
 				Uv = new Vector2(1, 0)
 			},
 			new VertexData
 			{
-				Position = new Vector2(0.5f, 0.5f),
+				Position = new Vector2(0.5f, -0.5f),
 				Uv = new Vector2(1, 1)
 			}
 		});

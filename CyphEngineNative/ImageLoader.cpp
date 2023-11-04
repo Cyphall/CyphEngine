@@ -6,7 +6,6 @@
 
 uint8_t* LoadImageNative(const char* filename, int& width, int& height, OriginalChannels& originalChannels, DesiredChannels desiredChannels)
 {
-    stbi_set_flip_vertically_on_load(true);
     return stbi_load(filename, &width, &height, reinterpret_cast<int*>(&originalChannels), static_cast<int>(desiredChannels));
 }
 

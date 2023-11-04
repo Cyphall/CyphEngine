@@ -68,22 +68,22 @@ public class UIPass
 			new VertexData
 			{
 				Position = new Vector2(0, 0),
-				Uv = new Vector2(0, 1)
-			},
-			new VertexData
-			{
-				Position = new Vector2(0, 1),
 				Uv = new Vector2(0, 0)
 			},
 			new VertexData
 			{
+				Position = new Vector2(0, 1),
+				Uv = new Vector2(0, 1)
+			},
+			new VertexData
+			{
 				Position = new Vector2(1, 0),
-				Uv = new Vector2(1, 1)
+				Uv = new Vector2(1, 0)
 			},
 			new VertexData
 			{
 				Position = new Vector2(1, 1),
-				Uv = new Vector2(1, 0)
+				Uv = new Vector2(1, 1)
 			}
 		});
 		

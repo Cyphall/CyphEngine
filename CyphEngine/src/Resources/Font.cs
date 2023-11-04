@@ -95,8 +95,8 @@ public class Font : IDisposable
 					Vector2 bottomLeft = cursor + new Vector2i(SDF_PADDING, SDF_PADDING);
 					Vector2 topRight = bottomLeft + charData.Size;
 				
-					charData.UVMin = new Vector2(bottomLeft.X, topRight.Y) / Texture.Size;
-					charData.UVMax = new Vector2(topRight.X, bottomLeft.Y) / Texture.Size;
+					charData.UVMin = bottomLeft / Texture.Size;
+					charData.UVMax = topRight / Texture.Size;
 				}
 					
 				FontLoader.FreeSDF(data);
