@@ -56,26 +56,32 @@ public class UIButton : AUISingleContainer
 		ButtonState state = ButtonState.Normal;
 		
 		bool isOver = Rect.FromOriginSize(ContentPosition, ActualContentSize).Contains(Window.CursorPos);
-
-		if (isOver)
-		{
-			Manager.Cursor = CursorShape.Hand;
-			state = ButtonState.Hovered;
-		}
 		
 		if (!_wasPressed && Window.MouseButtonPressed(MouseButton.Left) && isOver)
 		{
 			_wasPressed = true;
 		}
-		else if (_wasPressed && Window.MouseButtonReleased(MouseButton.Left) && isOver)
+		else if (_wasPressed && Window.MouseButtonReleased(MouseButton.Left))
 		{
-			OnClick();
+			if (isOver)
+			{
+				OnClick();
+			}
 			_wasPressed = false;
 		}
 
-		if (_wasPressed)
+		if (isOver)
 		{
-			state = ButtonState.Pressed;
+			Manager.Cursor = CursorShape.Hand;
+
+			if (_wasPressed)
+			{
+				state = ButtonState.Pressed;
+			}
+			else
+			{
+				state = ButtonState.Hovered;
+			}
 		}
 
 		State = state;
