@@ -113,6 +113,8 @@ public class UIPass
 
 	public void Render()
 	{
+		using DebugGroup debugGroup = new DebugGroup("UI pass");
+
 		_vertexDescriptor.Bind();
 		
 		_imageUniforms.Upload();

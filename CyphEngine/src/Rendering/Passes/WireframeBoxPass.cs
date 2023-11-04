@@ -75,6 +75,8 @@ public class WireframeBoxPass
 
 	public void Render()
 	{
+		using DebugGroup debugGroup = new DebugGroup("Wireframe box pass");
+
 		if (_uniforms.UniformCount == 0)
 		{
 			return;

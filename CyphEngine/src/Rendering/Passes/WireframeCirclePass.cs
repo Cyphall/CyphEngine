@@ -70,6 +70,8 @@ public class WireframeCirclePass
 
 	public void Render()
 	{
+		using DebugGroup debugGroup = new DebugGroup("Wireframe circle pass");
+
 		if (_uniforms.UniformCount == 0)
 		{
 			return;

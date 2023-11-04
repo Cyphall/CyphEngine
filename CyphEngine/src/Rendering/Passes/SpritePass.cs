@@ -80,6 +80,8 @@ public class SpritePass
 
 	public void Render()
 	{
+		using DebugGroup debugGroup = new DebugGroup("Sprite pass");
+
 		if (_uniforms.UniformCount == 0)
 		{
 			return;
