@@ -14,6 +14,9 @@ public sealed unsafe class Window : IDisposable
 
 	public Vector2 SimulatedSize { get; }
 
+	private Keys[] _keys = Enum.GetValues<Keys>();
+	private MouseButton[] _mouseButtons = Enum.GetValues<MouseButton>();
+
 	private Dictionary<Keys, InputAction> _previousKeyState = new Dictionary<Keys, InputAction>();
 	private Dictionary<Keys, InputAction> _currentKeyState = new Dictionary<Keys, InputAction>();
 
@@ -175,20 +178,20 @@ public sealed unsafe class Window : IDisposable
 
 	internal void HandleEvents()
 	{
-		foreach (Keys key in Enum.GetValues<Keys>())
+		foreach (Keys key in _keys)
 		{
 			_previousKeyState[key] = _currentKeyState[key];
 		}
-		foreach (Keys key in Enum.GetValues<Keys>())
+		foreach (Keys key in _keys)
 		{
 			_currentKeyState[key] = GLFW.GetKey(_window, key);
 		}
 
-		foreach (MouseButton mouseButton in Enum.GetValues<MouseButton>())
+		foreach (MouseButton mouseButton in _mouseButtons)
 		{
 			_previousMouseButtonState[mouseButton] = _currentMouseButtonState[mouseButton];
 		}
-		foreach (MouseButton mouseButton in Enum.GetValues<MouseButton>())
+		foreach (MouseButton mouseButton in _mouseButtons)
 		{
 			_currentMouseButtonState[mouseButton] = GLFW.GetMouseButton(_window, mouseButton);
 		}
