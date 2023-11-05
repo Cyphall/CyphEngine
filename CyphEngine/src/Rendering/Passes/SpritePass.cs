@@ -9,10 +9,21 @@ namespace CyphEngine.Rendering.Passes;
 
 public class SpritePass
 {
+	private struct SpriteRequest
+	{
+		public Texture Texture;
+		public Matrix4 Matrix;
+		public Vector4 ColorMask;
+		public Vector2 MinUV;
+		public Vector2 MaxUV;
+		public float ZOffset;
+	}
+
 	private Engine _engine;
 
 	private VertexDescriptor _vertexDescriptor;
 	private UniformsBuffer<SpriteUniforms> _uniforms;
+	private List<SpriteRequest> _requests = new List<SpriteRequest>();
 	private ConstBuffer<VertexData> _vertices;
 	private ShaderPipeline _pipeline;
 
@@ -88,10 +99,26 @@ public class SpritePass
 	{
 		using DebugGroup debugGroup = new DebugGroup("Sprite pass");
 
-		if (_uniforms.UniformCount == 0)
+		if (_requests.Count == 0)
 		{
 			return;
 		}
+
+		_requests.Sort((a, b) => a.ZOffset.CompareTo(b.ZOffset));
+		for (int i = 0; i < _requests.Count; i++)
+		{
+			SpriteRequest request = _requests[i];
+
+			_uniforms.Add(new SpriteUniforms
+			{
+				Texture = request.Texture.BindlessHandle,
+				Matrix = request.Matrix,
+				ColorMask = request.ColorMask,
+				MinUV = request.MinUV,
+				MaxUV = request.MaxUV
+			});
+		}
+		_requests.Clear();
 		
 		_vertexDescriptor.Bind();
 		
@@ -105,15 +132,16 @@ public class SpritePass
 		_uniforms.Clear();
 	}
 
-	public void AddRequest(Texture texture, Matrix4 matrix, Vector4 colorMask, Rect uvMinMax)
+	public void AddRequest(Texture texture, Matrix4 matrix, Vector4 colorMask, Rect uvMinMax, float zOffset)
 	{
-		_uniforms.Add(new SpriteUniforms
+		_requests.Add(new SpriteRequest
 		{
-			Texture = texture.BindlessHandle,
+			Texture = texture,
 			Matrix = matrix,
 			ColorMask = colorMask,
 			MinUV = uvMinMax.Min,
-			MaxUV = uvMinMax.Max
+			MaxUV = uvMinMax.Max,
+			ZOffset = zOffset
 		});
 	}
 }

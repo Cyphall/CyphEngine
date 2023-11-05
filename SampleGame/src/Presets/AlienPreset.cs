@@ -16,9 +16,11 @@ public class AlienPreset : IEntityPreset
 	{
 		SpriteRenderer spriteRenderer1 = entity.CreateComponent<SpriteRenderer>();
 		spriteRenderer1.LoadTexture($"assets/sprites/{_name}_0.png");
+		spriteRenderer1.ZOffset = 5;
 		
 		SpriteRenderer spriteRenderer2 = entity.CreateComponent<SpriteRenderer>();
 		spriteRenderer2.LoadTexture($"assets/sprites/{_name}_1.png");
+		spriteRenderer2.ZOffset = 5;
 		
 		SpriteAnimator spriteAnimator = entity.CreateComponent<SpriteAnimator>();
 		spriteAnimator.RegisterSpriteRenderer(spriteRenderer1);

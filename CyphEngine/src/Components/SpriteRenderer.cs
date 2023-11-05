@@ -46,7 +46,7 @@ public class SpriteRenderer : AComponent
 	
 	private void RecalculateSizeMatrix()
 	{
-		_sizeMatrix = Matrix4.CreateScale(Size.X, Size.Y, 1) * Matrix4.CreateTranslation(0, 0, ZOffset);
+		_sizeMatrix = Matrix4.CreateScale(Size.X, Size.Y, 1);
 	}
 
 	public void LoadTexture(string path, bool applySize = true, bool linearFiltering = false)
@@ -71,6 +71,6 @@ public class SpriteRenderer : AComponent
 		
 		Matrix4 localToView = _sizeMatrix * Transform.LocalToWorldMatrix * viewProjection;
 		
-		renderer.AddSpriteRequest(_texture, localToView, ColorMask, Uv);
+		renderer.AddSpriteRequest(_texture, localToView, ColorMask, Uv, ZOffset);
 	}
 }

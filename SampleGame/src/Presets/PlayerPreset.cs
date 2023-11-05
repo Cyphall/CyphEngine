@@ -10,6 +10,7 @@ public class PlayerPreset : IEntityPreset
 	{
 		SpriteRenderer spriteRenderer = entity.CreateComponent<SpriteRenderer>();
 		spriteRenderer.LoadTexture("assets/sprites/player.png");
+		spriteRenderer.ZOffset = 10;
 
 		entity.CreateComponent<PlayerScript>();
 

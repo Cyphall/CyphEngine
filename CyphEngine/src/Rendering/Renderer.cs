@@ -1,6 +1,5 @@
 ﻿using CyphEngine.Maths;
 using CyphEngine.Rendering.Passes;
-using CyphEngine.Rendering.Uniforms;
 using CyphEngine.Resources;
 using JetBrains.Annotations;
 using OpenTK.Graphics.OpenGL4;
@@ -27,7 +26,7 @@ public sealed class Renderer : IDisposable
 		_wireframeBoxPass = new WireframeBoxPass(engine);
 		_wireframeCirclePass = new WireframeCirclePass(engine);
 		
-		GL.ClearColor(0, 0, 0, 0);
+		GL.ClearColor(0, 0, 0, 1);
 		
 		GL.Enable(EnableCap.Blend);
 		GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
@@ -38,13 +37,9 @@ public sealed class Renderer : IDisposable
 	
 	public void Render()
 	{
-		GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-
-		GL.Enable(EnableCap.DepthTest);
+		GL.Clear(ClearBufferMask.ColorBufferBit);
 
 		_spritePass.Render();
-		
-		GL.Disable(EnableCap.DepthTest);
 
 		_uiPass.Render();
 
@@ -57,9 +52,9 @@ public sealed class Renderer : IDisposable
 		GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
 	}
 
-	public void AddSpriteRequest(Texture texture, Matrix4 matrix, Vector4 colorMask, Rect uvMinMax)
+	public void AddSpriteRequest(Texture texture, Matrix4 matrix, Vector4 colorMask, Rect uvMinMax, float zOffset)
 	{
-		_spritePass.AddRequest(texture, matrix, colorMask, uvMinMax);
+		_spritePass.AddRequest(texture, matrix, colorMask, uvMinMax, zOffset);
 	}
 
 	public void AddUIImageRequest(Texture texture, Matrix4 matrix, Vector4 colorMask, Rect uvMinMax)
