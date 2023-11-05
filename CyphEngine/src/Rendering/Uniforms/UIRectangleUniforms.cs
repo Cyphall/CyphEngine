@@ -4,7 +4,7 @@ using OpenTK.Mathematics;
 namespace CyphEngine.Rendering.Uniforms;
 
 [StructLayout(LayoutKind.Sequential)]
-public struct RectangleUniforms
+public struct UIRectangleUniforms
 {
 	public Vector4 FillColor;
 	public Vector4 BorderColor;

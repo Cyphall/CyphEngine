@@ -71,6 +71,6 @@ public class SpriteRenderer : AComponent
 		
 		Matrix4 localToView = _sizeMatrix * Transform.LocalToWorldMatrix * viewProjection;
 		
-		renderer.AddGameSpriteRequest(_texture, localToView, ColorMask, Uv);
+		renderer.AddSpriteRequest(_texture, localToView, ColorMask, Uv);
 	}
 }

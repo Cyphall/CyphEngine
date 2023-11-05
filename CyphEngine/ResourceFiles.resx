@@ -118,28 +118,40 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="sprite_shader_vert" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>shaders\sprite shader.vert;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  <data name="sprite_vert" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>shaders\sprite.vert;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
-  <data name="sprite_shader_frag" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>shaders\sprite shader.frag;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  <data name="sprite_frag" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>shaders\sprite.frag;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
-  <data name="ui_rectangle_shader_vert" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>shaders\ui rectangle shader.vert;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  <data name="ui_image_vert" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>shaders\ui image.vert;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
-  <data name="ui_rectangle_shader_frag" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>shaders\ui rectangle shader.frag;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  <data name="ui_image_frag" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>shaders\ui image.frag;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
-  <data name="ui_text_shader_vert" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>shaders\ui text shader.vert;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  <data name="ui_rectangle_vert" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>shaders\ui rectangle.vert;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
-  <data name="ui_text_shader_frag" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>shaders\ui text shader.frag;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  <data name="ui_rectangle_frag" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>shaders\ui rectangle.frag;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
-  <data name="wireframe_shader_vert" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>shaders\wireframe shader.vert;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  <data name="ui_text_vert" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>shaders\ui text.vert;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
-  <data name="wireframe_shader_frag" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>shaders\wireframe shader.frag;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  <data name="ui_text_frag" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>shaders\ui text.frag;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="wireframe_box_vert" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>shaders\wireframe box.vert;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="wireframe_box_frag" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>shaders\wireframe box.frag;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="wireframe_circle_vert" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>shaders\wireframe circle.vert;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="wireframe_circle_frag" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>shaders\wireframe circle.frag;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
 </root>

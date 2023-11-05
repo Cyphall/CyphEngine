@@ -47,7 +47,7 @@ public class UIImage : AUIElement
 		
 		Matrix4 matrix = Matrix4.CreateScale(ActualContentWidth, ActualContentHeight, 1) * Matrix4.CreateTranslation(ContentX, ContentY, 0) * projection;
 		
-		renderer.AddUISpriteRequest(_texture, matrix, ColorMask, Uv);
+		renderer.AddUIImageRequest(_texture, matrix, ColorMask, Uv);
 		
 		base.RenderOverride(renderer, ref projection);
 	}

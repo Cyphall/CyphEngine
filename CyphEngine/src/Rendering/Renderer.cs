@@ -13,14 +13,19 @@ public sealed class Renderer : IDisposable
 {
 	private Engine _engine;
 
-	private SpritePass _spritePass = new SpritePass();
-	private UIPass _uiPass = new UIPass();
-	private WireframeBoxPass _wireframeBoxPass = new WireframeBoxPass();
-	private WireframeCirclePass _wireframeCirclePass = new WireframeCirclePass();
+	private SpritePass _spritePass;
+	private UIPass _uiPass;
+	private WireframeBoxPass _wireframeBoxPass;
+	private WireframeCirclePass _wireframeCirclePass;
 
 	public Renderer(Engine engine)
 	{
 		_engine = engine;
+
+		_spritePass = new SpritePass(engine);
+		_uiPass = new UIPass(engine);
+		_wireframeBoxPass = new WireframeBoxPass(engine);
+		_wireframeCirclePass = new WireframeCirclePass(engine);
 		
 		GL.ClearColor(0, 0, 0, 0);
 		
@@ -52,74 +57,34 @@ public sealed class Renderer : IDisposable
 		GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
 	}
 
-	public void AddGameSpriteRequest(Texture texture, Matrix4 matrix, Vector4 colorMask, Rect uvMinMax)
+	public void AddSpriteRequest(Texture texture, Matrix4 matrix, Vector4 colorMask, Rect uvMinMax)
 	{
-		_spritePass.AddRequest(new SpriteUniforms
-		{
-			Texture = texture.BindlessHandle,
-			Matrix = matrix,
-			ColorMask = colorMask,
-			MinUV = uvMinMax.Min,
-			MaxUV = uvMinMax.Max
-		});
+		_spritePass.AddRequest(texture, matrix, colorMask, uvMinMax);
 	}
 
-	public void AddUISpriteRequest(Texture texture, Matrix4 matrix, Vector4 colorMask, Rect uvMinMax)
+	public void AddUIImageRequest(Texture texture, Matrix4 matrix, Vector4 colorMask, Rect uvMinMax)
 	{
-		_uiPass.AddImageRequest(new SpriteUniforms
-		{
-			Texture = texture.BindlessHandle,
-			Matrix = matrix,
-			ColorMask = colorMask,
-			MinUV = uvMinMax.Min,
-			MaxUV = uvMinMax.Max
-		});
+		_uiPass.AddImageRequest(texture, matrix, colorMask, uvMinMax);
 	}
 
 	public void AddUITextRequest(Texture texture, Matrix4 matrix, Vector4 colorMask, Rect uvMinMax, float sdfAlpha0Value, float sdfAlpha1Value)
 	{
-		_uiPass.AddTextRequest(new TextUniforms
-		{
-			Texture = texture.BindlessHandle,
-			SDFAlpha0Value = sdfAlpha0Value,
-			SDFAlpha1Value = sdfAlpha1Value,
-			Matrix = matrix,
-			ColorMask = colorMask,
-			MinUV = uvMinMax.Min,
-			MaxUV = uvMinMax.Max
-		});
+		_uiPass.AddTextRequest(texture, matrix, colorMask, uvMinMax, sdfAlpha0Value, sdfAlpha1Value);
 	}
 
 	public void AddUIRectangleRequest(Vector4 fillColor, Vector4 borderColor, Matrix4 matrix, float cornerRadius, Vector2 rectangleSize, float borderThickness)
 	{
-		_uiPass.AddRectangleRequest(new RectangleUniforms
-		{
-			FillColor = fillColor,
-			BorderColor = borderColor,
-			Matrix = matrix,
-			CornerRadius = cornerRadius,
-			RectangleSize = rectangleSize,
-			DpiScaling = _engine.Window.Scale,
-			BorderThickness = borderThickness
-		});
+		_uiPass.AddRectangleRequest(fillColor, borderColor, matrix, cornerRadius, rectangleSize, borderThickness);
 	}
 
 	public void AddWireframeBoxRequest(Vector4 color, Matrix4 matrix)
 	{
-		_wireframeBoxPass.AddRequest(new WireframeUniforms
-		{
-			Color = color,
-			Matrix = matrix
-		});
+		_wireframeBoxPass.AddRequest(color, matrix);
 	}
 
 	public void AddWireframeCircleRequest(Vector4 color, Matrix4 matrix)
 	{
-		_wireframeCirclePass.AddRequest(new WireframeUniforms
-		{
-			Color = color,
-			Matrix = matrix
-		});
+		_wireframeCirclePass.AddRequest(color, matrix);
 	}
 
 	public void Dispose()

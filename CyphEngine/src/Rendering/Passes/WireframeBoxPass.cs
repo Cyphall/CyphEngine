@@ -7,28 +7,32 @@ namespace CyphEngine.Rendering.Passes;
 
 public class WireframeBoxPass
 {
+	private Engine _engine;
+
 	private VertexDescriptor _vertexDescriptor;
-	private UniformsBuffer<WireframeUniforms> _uniforms;
+	private UniformsBuffer<WireframeBoxUniforms> _uniforms;
 	private ConstBuffer<VertexData> _vertices;
 	private ShaderPipeline _pipeline;
 
-	public WireframeBoxPass()
+	public WireframeBoxPass(Engine engine)
 	{
+		_engine = engine;
+
 		//##################################################
 		//#################### PIPELINE ####################
 		//##################################################
 		
-		_pipeline = new ShaderPipeline("wireframe shader", new Dictionary<ShaderType, string>
+		_pipeline = new ShaderPipeline("wireframe box", new Dictionary<ShaderType, string>
 		{
-			{ShaderType.VertexShader, ResourceFiles.wireframe_shader_vert},
-			{ShaderType.FragmentShader, ResourceFiles.wireframe_shader_frag}
+			{ShaderType.VertexShader, ResourceFiles.wireframe_box_vert},
+			{ShaderType.FragmentShader, ResourceFiles.wireframe_box_frag}
 		});
 
 		//##################################################
 		//#################### UNIFORMS ####################
 		//##################################################
 
-		_uniforms = new UniformsBuffer<WireframeUniforms>();
+		_uniforms = new UniformsBuffer<WireframeBoxUniforms>();
 
 		//##################################################
 		//#################### VERTICES ####################
@@ -94,8 +98,12 @@ public class WireframeBoxPass
 		_uniforms.Clear();
 	}
 
-	public void AddRequest(WireframeUniforms request)
+	public void AddRequest(Vector4 color, Matrix4 matrix)
 	{
-		_uniforms.Add(request);
+		_uniforms.Add(new WireframeBoxUniforms
+		{
+			Color = color,
+			Matrix = matrix
+		});
 	}
 }

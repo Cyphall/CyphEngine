@@ -1,5 +1,7 @@
 ﻿using System.Runtime.InteropServices;
+using CyphEngine.Maths;
 using CyphEngine.Rendering.Uniforms;
+using CyphEngine.Resources;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 
@@ -7,21 +9,25 @@ namespace CyphEngine.Rendering.Passes;
 
 public class SpritePass
 {
+	private Engine _engine;
+
 	private VertexDescriptor _vertexDescriptor;
 	private UniformsBuffer<SpriteUniforms> _uniforms;
 	private ConstBuffer<VertexData> _vertices;
 	private ShaderPipeline _pipeline;
 
-	public SpritePass()
+	public SpritePass(Engine engine)
 	{
+		_engine = engine;
+
 		//##################################################
 		//#################### PIPELINE ####################
 		//##################################################
 		
-		_pipeline = new ShaderPipeline("sprite shader", new Dictionary<ShaderType, string>
+		_pipeline = new ShaderPipeline("sprite", new Dictionary<ShaderType, string>
 		{
-			{ShaderType.VertexShader, ResourceFiles.sprite_shader_vert},
-			{ShaderType.FragmentShader, ResourceFiles.sprite_shader_frag}
+			{ShaderType.VertexShader, ResourceFiles.sprite_vert},
+			{ShaderType.FragmentShader, ResourceFiles.sprite_frag}
 		});
 
 		//##################################################
@@ -99,8 +105,15 @@ public class SpritePass
 		_uniforms.Clear();
 	}
 
-	public void AddRequest(SpriteUniforms request)
+	public void AddRequest(Texture texture, Matrix4 matrix, Vector4 colorMask, Rect uvMinMax)
 	{
-		_uniforms.Add(request);
+		_uniforms.Add(new SpriteUniforms
+		{
+			Texture = texture.BindlessHandle,
+			Matrix = matrix,
+			ColorMask = colorMask,
+			MinUV = uvMinMax.Min,
+			MaxUV = uvMinMax.Max
+		});
 	}
 }

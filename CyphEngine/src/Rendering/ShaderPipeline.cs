@@ -60,7 +60,7 @@ public class ShaderPipeline : IDisposable
 		{
 			string error = GL.GetShaderInfoLog((int)handle);
 
-			throw new InvalidOperationException($"Error while compiling shader {name} ({type})\n{error}");
+			throw new InvalidOperationException($"Error while compiling shader \"{name}\" ({type})\n{error}");
 		}
 
 		return handle;

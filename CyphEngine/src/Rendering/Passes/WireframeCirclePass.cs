@@ -10,29 +10,33 @@ public class WireframeCirclePass
 {
 	private const int CIRCLE_OUTER_VERTEX_COUNT = 16;
 	private const int CIRCLE_VERTEX_COUNT = CIRCLE_OUTER_VERTEX_COUNT + 2;
-	
+
+	private Engine _engine;
+
 	private VertexDescriptor _vertexDescriptor;
-	private UniformsBuffer<WireframeUniforms> _uniforms;
+	private UniformsBuffer<WireframeCircleUniforms> _uniforms;
 	private ConstBuffer<VertexData> _vertices;
 	private ShaderPipeline _pipeline;
 
-	public WireframeCirclePass()
+	public WireframeCirclePass(Engine engine)
 	{
+		_engine = engine;
+
 		//##################################################
 		//#################### PIPELINE ####################
 		//##################################################
 		
-		_pipeline = new ShaderPipeline("wireframe shader", new Dictionary<ShaderType, string>
+		_pipeline = new ShaderPipeline("wireframe circle", new Dictionary<ShaderType, string>
 		{
-			{ShaderType.VertexShader, ResourceFiles.wireframe_shader_vert},
-			{ShaderType.FragmentShader, ResourceFiles.wireframe_shader_frag}
+			{ShaderType.VertexShader, ResourceFiles.wireframe_circle_vert},
+			{ShaderType.FragmentShader, ResourceFiles.wireframe_circle_frag}
 		});
 
 		//##################################################
 		//#################### UNIFORMS ####################
 		//##################################################
 		
-		_uniforms = new UniformsBuffer<WireframeUniforms>();
+		_uniforms = new UniformsBuffer<WireframeCircleUniforms>();
 
 		//##################################################
 		//#################### VERTICES ####################
@@ -89,8 +93,12 @@ public class WireframeCirclePass
 		_uniforms.Clear();
 	}
 
-	public void AddRequest(WireframeUniforms request)
+	public void AddRequest(Vector4 color, Matrix4 matrix)
 	{
-		_uniforms.Add(request);
+		_uniforms.Add(new WireframeCircleUniforms
+		{
+			Color = color,
+			Matrix = matrix
+		});
 	}
 }

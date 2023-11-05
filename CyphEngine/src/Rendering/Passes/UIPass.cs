@@ -1,5 +1,7 @@
 ﻿using System.Runtime.InteropServices;
+using CyphEngine.Maths;
 using CyphEngine.Rendering.Uniforms;
+using CyphEngine.Resources;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 
@@ -13,13 +15,15 @@ public class UIPass
 		Text,
 		Rectangle
 	}
+
+	private Engine _engine;
 	
 	private VertexDescriptor _vertexDescriptor;
 	private ConstBuffer<VertexData> _vertices;
 	
-	private UniformsBuffer<SpriteUniforms> _imageUniforms;
-	private UniformsBuffer<TextUniforms> _textUniforms;
-	private UniformsBuffer<RectangleUniforms> _rectangleUniforms;
+	private UniformsBuffer<UIImageUniforms> _imageUniforms;
+	private UniformsBuffer<UITextUniforms> _textUniforms;
+	private UniformsBuffer<UIRectangleUniforms> _rectangleUniforms;
 	
 	private ShaderPipeline _imagePipeline;
 	private ShaderPipeline _textPipeline;
@@ -27,37 +31,39 @@ public class UIPass
 
 	private List<(RenderType, int)> _requestOrder = new List<(RenderType, int)>();
 
-	public UIPass()
+	public UIPass(Engine engine)
 	{
+		_engine = engine;
+
 		//##################################################
 		//#################### PIPELINE ####################
 		//##################################################
 		
-		_imagePipeline = new ShaderPipeline("sprite shader", new Dictionary<ShaderType, string>
+		_imagePipeline = new ShaderPipeline("ui image", new Dictionary<ShaderType, string>
 		{
-			{ShaderType.VertexShader, ResourceFiles.sprite_shader_vert},
-			{ShaderType.FragmentShader, ResourceFiles.sprite_shader_frag}
+			{ShaderType.VertexShader, ResourceFiles.ui_image_vert},
+			{ShaderType.FragmentShader, ResourceFiles.ui_image_frag}
 		});
 		
-		_textPipeline = new ShaderPipeline("ui text shader", new Dictionary<ShaderType, string>
+		_textPipeline = new ShaderPipeline("ui text", new Dictionary<ShaderType, string>
 		{
-			{ShaderType.VertexShader, ResourceFiles.ui_text_shader_vert},
-			{ShaderType.FragmentShader, ResourceFiles.ui_text_shader_frag}
+			{ShaderType.VertexShader, ResourceFiles.ui_text_vert},
+			{ShaderType.FragmentShader, ResourceFiles.ui_text_frag}
 		});
 		
-		_rectanglePipeline = new ShaderPipeline("ui rectangle shader", new Dictionary<ShaderType, string>
+		_rectanglePipeline = new ShaderPipeline("ui rectangle", new Dictionary<ShaderType, string>
 		{
-			{ShaderType.VertexShader, ResourceFiles.ui_rectangle_shader_vert},
-			{ShaderType.FragmentShader, ResourceFiles.ui_rectangle_shader_frag}
+			{ShaderType.VertexShader, ResourceFiles.ui_rectangle_vert},
+			{ShaderType.FragmentShader, ResourceFiles.ui_rectangle_frag}
 		});
 
 		//##################################################
 		//#################### UNIFORMS ####################
 		//##################################################
 
-		_imageUniforms = new UniformsBuffer<SpriteUniforms>();
-		_textUniforms = new UniformsBuffer<TextUniforms>();
-		_rectangleUniforms = new UniformsBuffer<RectangleUniforms>();
+		_imageUniforms = new UniformsBuffer<UIImageUniforms>();
+		_textUniforms = new UniformsBuffer<UITextUniforms>();
+		_rectangleUniforms = new UniformsBuffer<UIRectangleUniforms>();
 
 		//##################################################
 		//#################### VERTICES ####################
@@ -121,9 +127,9 @@ public class UIPass
 		_textUniforms.Upload();
 		_rectangleUniforms.Upload();
 		
-		int spriteUniformSize = Marshal.SizeOf<SpriteUniforms>();
-		int textUniformSize = Marshal.SizeOf<TextUniforms>();
-		int rectangleUniformSize = Marshal.SizeOf<RectangleUniforms>();
+		int imageUniformSize = Marshal.SizeOf<UIImageUniforms>();
+		int textUniformSize = Marshal.SizeOf<UITextUniforms>();
+		int rectangleUniformSize = Marshal.SizeOf<UIRectangleUniforms>();
 
 		int currentImageIndex = 0;
 		int currentTextIndex = 0;
@@ -138,7 +144,7 @@ public class UIPass
 				case RenderType.Image:
 				{
 					_imagePipeline.Bind();
-					GL.BindBufferRange(BufferRangeTarget.ShaderStorageBuffer, 0, _imageUniforms.Handle, (IntPtr)(spriteUniformSize * currentImageIndex), spriteUniformSize * instanceCount);
+					GL.BindBufferRange(BufferRangeTarget.ShaderStorageBuffer, 0, _imageUniforms.Handle, (IntPtr)(imageUniformSize * currentImageIndex), imageUniformSize * instanceCount);
 					GL.DrawArraysInstanced(PrimitiveType.TriangleStrip, 0, 4, instanceCount);
 					currentImageIndex += instanceCount;
 
@@ -177,9 +183,16 @@ public class UIPass
 		_requestOrder.Clear();
 	}
 
-	public void AddImageRequest(SpriteUniforms request)
+	public void AddImageRequest(Texture texture, Matrix4 matrix, Vector4 colorMask, Rect uvMinMax)
 	{
-		_imageUniforms.Add(request);
+		_imageUniforms.Add(new UIImageUniforms
+		{
+			Texture = texture.BindlessHandle,
+			Matrix = matrix,
+			ColorMask = colorMask,
+			MinUV = uvMinMax.Min,
+			MaxUV = uvMinMax.Max
+		});
 
 		if (_requestOrder.Count == 0 || _requestOrder[^1].Item1 != RenderType.Image)
 		{
@@ -192,9 +205,18 @@ public class UIPass
 		}
 	}
 
-	public void AddTextRequest(TextUniforms request)
+	public void AddTextRequest(Texture texture, Matrix4 matrix, Vector4 colorMask, Rect uvMinMax, float sdfAlpha0Value, float sdfAlpha1Value)
 	{
-		_textUniforms.Add(request);
+		_textUniforms.Add(new UITextUniforms
+		{
+			Texture = texture.BindlessHandle,
+			SDFAlpha0Value = sdfAlpha0Value,
+			SDFAlpha1Value = sdfAlpha1Value,
+			Matrix = matrix,
+			ColorMask = colorMask,
+			MinUV = uvMinMax.Min,
+			MaxUV = uvMinMax.Max
+		});
 		
 		if (_requestOrder.Count == 0 || _requestOrder[^1].Item1 != RenderType.Text)
 		{
@@ -207,9 +229,18 @@ public class UIPass
 		}
 	}
 
-	public void AddRectangleRequest(RectangleUniforms request)
+	public void AddRectangleRequest(Vector4 fillColor, Vector4 borderColor, Matrix4 matrix, float cornerRadius, Vector2 rectangleSize, float borderThickness)
 	{
-		_rectangleUniforms.Add(request);
+		_rectangleUniforms.Add(new UIRectangleUniforms
+		{
+			FillColor = fillColor,
+			BorderColor = borderColor,
+			Matrix = matrix,
+			CornerRadius = cornerRadius,
+			RectangleSize = rectangleSize,
+			DpiScaling = _engine.Window.Scale,
+			BorderThickness = borderThickness
+		});
 		
 		if (_requestOrder.Count == 0 || _requestOrder[^1].Item1 != RenderType.Rectangle)
 		{
