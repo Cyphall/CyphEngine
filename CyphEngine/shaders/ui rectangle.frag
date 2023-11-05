@@ -11,13 +11,21 @@ vec4 premultiplyAlpha(vec4 color);
 
 // ---------- INPUTS ----------
 
-flat in vec4 v_fillColor;
-flat in vec4 v_borderColor;
-flat in float v_cornerRadius;
-flat in vec2 v_rectangleSize;
 in vec2 v_uv;
-flat in float v_dpiScaling;
-flat in float v_borderThickness;
+
+// ---------- UNIFORMS ----------
+
+layout(std430, binding = 0) buffer _0
+{
+	vec4 u_fillColor;
+	vec4 u_borderColor;
+	mat4 u_matrix;
+	vec2 u_rectangleSize;
+	float u_cornerRadius;
+	float u_dpiScaling;
+	vec3 _padding;
+	float u_borderThickness;
+};
 
 // ---------- OUTPUTS ----------
 
@@ -25,14 +33,14 @@ layout(location = 0) out vec4 o_color;
 
 void main()
 {
-	vec2 posInRectangle = v_uv * v_rectangleSize;
+	vec2 posInRectangle = v_uv * u_rectangleSize;
 
 	float innerPart = calculateInnerPart(posInRectangle);
 	float borderPart = calculateBorderPart(posInRectangle) - innerPart;
 
 	o_color = vec4(0);
-	o_color += premultiplyAlpha(v_borderColor) * borderPart;
-	o_color += premultiplyAlpha(v_fillColor) * innerPart;
+	o_color += premultiplyAlpha(u_borderColor) * borderPart;
+	o_color += premultiplyAlpha(u_fillColor) * innerPart;
 }
 
 float remap(float value, float fromMin, float fromMax, float toMin, float toMax)
@@ -46,27 +54,27 @@ float calculatePart(vec2 posInRectangle, vec2 contentRectMin, vec2 contentRectMa
 
 	float distanceToInnerRect = distance(posInRectangle, closestPos);
 
-	float pixelSize = 1.0f / v_dpiScaling;
+	float pixelSize = 1.0f / u_dpiScaling;
 
 	return clamp(remap(distanceToInnerRect, cornerRadius, cornerRadius + pixelSize, 1.0f, 0.0f), 0.0f, 1.0f);
 }
 
 float calculateBorderPart(vec2 posInRectangle)
 {
-	float margin = v_cornerRadius + 0.5f;
+	float margin = u_cornerRadius + 0.5f;
 	vec2 contentRectMin = vec2(margin);
-	vec2 contentRectMax = v_rectangleSize - margin;
+	vec2 contentRectMax = u_rectangleSize - margin;
 
-	return calculatePart(posInRectangle, contentRectMin, contentRectMax, v_cornerRadius);
+	return calculatePart(posInRectangle, contentRectMin, contentRectMax, u_cornerRadius);
 }
 
 float calculateInnerPart(vec2 posInRectangle)
 {
-	float margin = max(v_cornerRadius, v_borderThickness) + 0.5f;
+	float margin = max(u_cornerRadius, u_borderThickness) + 0.5f;
 	vec2 contentRectMin = vec2(margin);
-	vec2 contentRectMax = v_rectangleSize - margin;
+	vec2 contentRectMax = u_rectangleSize - margin;
 
-	return calculatePart(posInRectangle, contentRectMin, contentRectMax, max(v_cornerRadius - v_borderThickness, 0));
+	return calculatePart(posInRectangle, contentRectMin, contentRectMax, max(u_cornerRadius - u_borderThickness, 0));
 }
 
 vec4 premultiplyAlpha(vec4 color)

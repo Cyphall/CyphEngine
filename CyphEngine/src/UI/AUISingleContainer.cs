@@ -1,4 +1,5 @@
-﻿using CyphEngine.Rendering;
+﻿using CyphEngine.Maths;
+using CyphEngine.Rendering;
 using JetBrains.Annotations;
 using OpenTK.Mathematics;
 
@@ -47,7 +48,9 @@ public abstract class AUISingleContainer : AUIElement
 	{
 		base.RenderOverride(renderer, ref projection);
 
+		renderer.PushUIScissorArea(Rect.FromOriginSize(BoundingBoxPosition, ActualBoundingBoxSize));
 		Child?.Render(renderer, ref projection);
+		renderer.PopUIScissorArea();
 	}
 	
 	protected virtual void OnChildChanged(AUIElement? previousChild, AUIElement? newChild) {}

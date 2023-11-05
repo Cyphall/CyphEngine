@@ -41,7 +41,11 @@ public sealed class Renderer : IDisposable
 
 		_spritePass.Render();
 
+		GL.Enable(EnableCap.ScissorTest);
+
 		_uiPass.Render();
+
+		GL.Disable(EnableCap.ScissorTest);
 
 		GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
 
@@ -80,6 +84,16 @@ public sealed class Renderer : IDisposable
 	public void AddWireframeCircleRequest(Vector4 color, Matrix4 matrix)
 	{
 		_wireframeCirclePass.AddRequest(color, matrix);
+	}
+
+	public void PushUIScissorArea(Rect scissorArea)
+	{
+		_uiPass.PushScissorArea(scissorArea);
+	}
+
+	public void PopUIScissorArea()
+	{
+		_uiPass.PopScissorArea();
 	}
 
 	public void Dispose()

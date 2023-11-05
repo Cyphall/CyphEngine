@@ -42,4 +42,14 @@ public struct Rect
 			Max = origin + size
 		};
 	}
+
+	public static bool operator==(Rect l, Rect r)
+	{
+		return l.Min == r.Min && l.Max == r.Max;
+	}
+
+	public static bool operator!=(Rect l, Rect r)
+	{
+		return l.Min != r.Min || l.Max != r.Max;
+	}
 }

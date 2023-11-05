@@ -4,10 +4,19 @@
 // ---------- INPUTS ----------
 
 in vec2 v_uv;
-flat in sampler2D v_texture;
-flat in vec4 v_colorMask;
-flat in float v_sdfAlpha0Value;
-flat in float v_sdfAlpha1Value;
+
+// ---------- UNIFORMS ----------
+
+layout(std430, binding = 0) buffer _0
+{
+	layout(bindless_sampler) sampler2D u_texture;
+	float u_sdfAlpha0Value;
+	float u_sdfAlpha1Value;
+	mat4 u_matrix;
+	vec4 u_colorMask;
+	vec2 u_minUV;
+	vec2 u_maxUV;
+};
 
 // ---------- OUTPUTS ----------
 
@@ -20,7 +29,7 @@ float remap(float value, float fromMin, float fromMax, float toMin, float toMax)
 
 void main()
 {
-	o_color = texture(v_texture, v_uv) * v_colorMask;
+	o_color = texture(u_texture, v_uv) * u_colorMask;
 
-	o_color.a = clamp(remap(o_color.a, v_sdfAlpha0Value, v_sdfAlpha1Value, 0.0f, 1.0f), 0.0f, 1.0f);
+	o_color.a = clamp(remap(o_color.a, u_sdfAlpha0Value, u_sdfAlpha1Value, 0.0f, 1.0f), 0.0f, 1.0f);
 }

@@ -11,9 +11,16 @@ public class UIPass
 {
 	private enum RenderType
 	{
+		None,
 		Image,
 		Text,
 		Rectangle
+	}
+
+	private struct RenderRequest
+	{
+		public RenderType Type;
+		public Rect ScissorArea;
 	}
 
 	private Engine _engine;
@@ -24,16 +31,19 @@ public class UIPass
 	private UniformsBuffer<UIImageUniforms> _imageUniforms;
 	private UniformsBuffer<UITextUniforms> _textUniforms;
 	private UniformsBuffer<UIRectangleUniforms> _rectangleUniforms;
-	
+
+	private Stack<Rect> _scissorAreaStack = new Stack<Rect>();
+	private List<RenderRequest> _renderRequests = new List<RenderRequest>();
+
 	private ShaderPipeline _imagePipeline;
 	private ShaderPipeline _textPipeline;
 	private ShaderPipeline _rectanglePipeline;
 
-	private List<(RenderType, int)> _requestOrder = new List<(RenderType, int)>();
-
 	public UIPass(Engine engine)
 	{
 		_engine = engine;
+
+		_scissorAreaStack.Push(Rect.FromOriginSize(Vector2.Zero, _engine.Window.SimulatedSize));
 
 		//##################################################
 		//#################### PIPELINE ####################
@@ -117,9 +127,36 @@ public class UIPass
 		_rectanglePipeline.Dispose();
 	}
 
+	private void ApplyScissor(Rect scissor)
+	{
+		Vector2i min = new Vector2i(
+			(int)Math.Floor(scissor.Min.X * _engine.Window.Scale),
+			(int)Math.Floor(scissor.Min.Y * _engine.Window.Scale)
+		);
+
+		Vector2i max = new Vector2i(
+			(int)Math.Ceiling(scissor.Max.X * _engine.Window.Scale),
+			(int)Math.Ceiling(scissor.Max.Y * _engine.Window.Scale)
+		);
+
+		Vector2i size = max - min;
+
+		GL.Scissor(
+			min.X,
+			_engine.Window.FramebufferSize.Y - size.Y - min.Y,
+			size.X,
+			size.Y
+		);
+	}
+
 	public void Render()
 	{
 		using DebugGroup debugGroup = new DebugGroup("UI pass");
+
+		if (_scissorAreaStack.Count > 1)
+			throw new InvalidOperationException("The scissor stack was pushed more times than popped");
+		if (_scissorAreaStack.Count < 1)
+			throw new InvalidOperationException("The scissor stack was popped more times than pushed");
 
 		_vertexDescriptor.Bind();
 		
@@ -135,52 +172,109 @@ public class UIPass
 		int currentTextIndex = 0;
 		int currentRectangleIndex = 0;
 
-		for (int i = 0; i < _requestOrder.Count; i++)
+		RenderType lastType = RenderType.None;
+		Rect lastScissorArea = Rect.FromTwoPoints(Vector2.NegativeInfinity, Vector2.PositiveInfinity);
+
+		for (int i = 0; i < _renderRequests.Count; i++)
 		{
-			int instanceCount = _requestOrder[i].Item2;
-			
-			switch (_requestOrder[i].Item1)
+			RenderRequest request = _renderRequests[i];
+
+			switch (request.Type)
 			{
 				case RenderType.Image:
 				{
-					_imagePipeline.Bind();
-					GL.BindBufferRange(BufferRangeTarget.ShaderStorageBuffer, 0, _imageUniforms.Handle, (IntPtr)(imageUniformSize * currentImageIndex), imageUniformSize * instanceCount);
-					GL.DrawArraysInstanced(PrimitiveType.TriangleStrip, 0, 4, instanceCount);
-					currentImageIndex += instanceCount;
+					if (request.ScissorArea.Size.X > 0 && request.ScissorArea.Size.Y > 0)
+					{
+						if (lastType != RenderType.Image)
+						{
+							GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
+							GL.BlendEquationSeparate(BlendEquationMode.FuncAdd, BlendEquationMode.FuncAdd);
+
+							_imagePipeline.Bind();
+
+							lastType = RenderType.Image;
+						}
+
+						if (request.ScissorArea != lastScissorArea)
+						{
+							ApplyScissor(request.ScissorArea);
+							lastScissorArea = request.ScissorArea;
+						}
+
+						GL.BindBufferRange(BufferRangeTarget.ShaderStorageBuffer, 0, _imageUniforms.Handle, (IntPtr)(imageUniformSize * currentImageIndex), imageUniformSize);
+						GL.DrawArrays(PrimitiveType.TriangleStrip, 0, 4);
+					}
+
+					currentImageIndex++;
 
 					break;
 				}
 				case RenderType.Text:
 				{
-					_textPipeline.Bind();
-					GL.BindBufferRange(BufferRangeTarget.ShaderStorageBuffer, 0, _textUniforms.Handle, (IntPtr)(textUniformSize * currentTextIndex), textUniformSize * instanceCount);
-					GL.DrawArraysInstanced(PrimitiveType.TriangleStrip, 0, 4, instanceCount);
-					currentTextIndex += instanceCount;
+					if (request.ScissorArea.Size.X > 0 && request.ScissorArea.Size.Y > 0)
+					{
+						if (lastType != RenderType.Text)
+						{
+							GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
+							GL.BlendEquationSeparate(BlendEquationMode.FuncAdd, BlendEquationMode.FuncAdd);
+
+							_textPipeline.Bind();
+
+							lastType = RenderType.Text;
+						}
+
+						if (request.ScissorArea != lastScissorArea)
+						{
+							ApplyScissor(request.ScissorArea);
+							lastScissorArea = request.ScissorArea;
+						}
+
+						GL.BindBufferRange(BufferRangeTarget.ShaderStorageBuffer, 0, _textUniforms.Handle, (IntPtr)(textUniformSize * currentTextIndex), textUniformSize);
+						GL.DrawArrays(PrimitiveType.TriangleStrip, 0, 4);
+					}
+
+					currentTextIndex++;
 
 					break;
 				}
 				case RenderType.Rectangle:
 				{
-					GL.BlendFunc(BlendingFactor.One, BlendingFactor.OneMinusSrcAlpha);
-					GL.BlendEquationSeparate(BlendEquationMode.FuncAdd, BlendEquationMode.FuncAdd);
-					
-					_rectanglePipeline.Bind();
-					GL.BindBufferRange(BufferRangeTarget.ShaderStorageBuffer, 0, _rectangleUniforms.Handle, (IntPtr)(rectangleUniformSize * currentRectangleIndex), rectangleUniformSize * instanceCount);
-					GL.DrawArraysInstanced(PrimitiveType.TriangleStrip, 0, 4, instanceCount);
-					currentRectangleIndex += instanceCount;
-					
-					GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
-					GL.BlendEquationSeparate(BlendEquationMode.FuncAdd, BlendEquationMode.FuncAdd);
+					if (request.ScissorArea.Size.X > 0 && request.ScissorArea.Size.Y > 0)
+					{
+						if (lastType != RenderType.Rectangle)
+						{
+							GL.BlendFunc(BlendingFactor.One, BlendingFactor.OneMinusSrcAlpha);
+							GL.BlendEquationSeparate(BlendEquationMode.FuncAdd, BlendEquationMode.FuncAdd);
+
+							_rectanglePipeline.Bind();
+
+							lastType = RenderType.Rectangle;
+						}
+
+						if (request.ScissorArea != lastScissorArea)
+						{
+							ApplyScissor(request.ScissorArea);
+							lastScissorArea = request.ScissorArea;
+						}
+
+						GL.BindBufferRange(BufferRangeTarget.ShaderStorageBuffer, 0, _rectangleUniforms.Handle, (IntPtr)(rectangleUniformSize * currentRectangleIndex), rectangleUniformSize);
+						GL.DrawArrays(PrimitiveType.TriangleStrip, 0, 4);
+					}
+
+					currentRectangleIndex++;
 
 					break;
 				}
 			}
 		}
 
+		GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
+		GL.BlendEquationSeparate(BlendEquationMode.FuncAdd, BlendEquationMode.FuncAdd);
+
 		_imageUniforms.Clear();
 		_textUniforms.Clear();
 		_rectangleUniforms.Clear();
-		_requestOrder.Clear();
+		_renderRequests.Clear();
 	}
 
 	public void AddImageRequest(Texture texture, Matrix4 matrix, Vector4 colorMask, Rect uvMinMax)
@@ -194,15 +288,11 @@ public class UIPass
 			MaxUV = uvMinMax.Max
 		});
 
-		if (_requestOrder.Count == 0 || _requestOrder[^1].Item1 != RenderType.Image)
+		_renderRequests.Add(new RenderRequest
 		{
-			_requestOrder.Add((RenderType.Image, 1));
-		}
-		else
-		{
-			(RenderType type, int count) = _requestOrder[^1];
-			_requestOrder[^1] = (type, count + 1);
-		}
+			Type = RenderType.Image,
+			ScissorArea = _scissorAreaStack.Peek()
+		});
 	}
 
 	public void AddTextRequest(Texture texture, Matrix4 matrix, Vector4 colorMask, Rect uvMinMax, float sdfAlpha0Value, float sdfAlpha1Value)
@@ -217,16 +307,12 @@ public class UIPass
 			MinUV = uvMinMax.Min,
 			MaxUV = uvMinMax.Max
 		});
-		
-		if (_requestOrder.Count == 0 || _requestOrder[^1].Item1 != RenderType.Text)
+
+		_renderRequests.Add(new RenderRequest
 		{
-			_requestOrder.Add((RenderType.Text, 1));
-		}
-		else
-		{
-			(RenderType type, int count) = _requestOrder[^1];
-			_requestOrder[^1] = (type, count + 1);
-		}
+			Type = RenderType.Text,
+			ScissorArea = _scissorAreaStack.Peek()
+		});
 	}
 
 	public void AddRectangleRequest(Vector4 fillColor, Vector4 borderColor, Matrix4 matrix, float cornerRadius, Vector2 rectangleSize, float borderThickness)
@@ -241,15 +327,26 @@ public class UIPass
 			DpiScaling = _engine.Window.Scale,
 			BorderThickness = borderThickness
 		});
-		
-		if (_requestOrder.Count == 0 || _requestOrder[^1].Item1 != RenderType.Rectangle)
+
+		_renderRequests.Add(new RenderRequest
 		{
-			_requestOrder.Add((RenderType.Rectangle, 1));
-		}
-		else
-		{
-			(RenderType type, int count) = _requestOrder[^1];
-			_requestOrder[^1] = (type, count + 1);
-		}
+			Type = RenderType.Rectangle,
+			ScissorArea = _scissorAreaStack.Peek()
+		});
+	}
+
+	public void PushScissorArea(Rect scissorArea)
+	{
+		Rect currentScissorArea = _scissorAreaStack.Peek();
+
+		_scissorAreaStack.Push(Rect.FromTwoPoints(
+			Vector2.ComponentMax(currentScissorArea.Min, scissorArea.Min),
+			Vector2.ComponentMin(currentScissorArea.Max, scissorArea.Max)
+		));
+	}
+
+	public void PopScissorArea()
+	{
+		_scissorAreaStack.Pop();
 	}
 }
