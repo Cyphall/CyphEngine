@@ -50,9 +50,12 @@ public class UIRectangle : AUISingleContainer
 
 	protected override void RenderOverride(Renderer renderer, ref Matrix4 projection)
 	{
-		Matrix4 matrix = Matrix4.CreateScale(ActualContentWidth, ActualContentHeight, 1) * Matrix4.CreateTranslation(ContentX, ContentY, 0) * projection;
-		
-		renderer.AddUIRectangleRequest(FillColor, BorderColor, matrix, CornerRadius, ActualContentSize, BorderThickness);
+		if ((FillColor != Vector4.Zero || BorderColor != Vector4.Zero) && ActualContentSize.X > 0 && ActualContentSize.Y > 0)
+		{
+			Matrix4 matrix = Matrix4.CreateScale(ActualContentWidth, ActualContentHeight, 1) * Matrix4.CreateTranslation(ContentX, ContentY, 0) * projection;
+
+			renderer.AddUIRectangleRequest(FillColor, BorderColor, matrix, CornerRadius, ActualContentSize, BorderThickness);
+		}
 		
 		base.RenderOverride(renderer, ref projection);
 	}

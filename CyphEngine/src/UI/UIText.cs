@@ -78,28 +78,31 @@ public class UIText : AUIElement
 		if (_font == null)
 			return;
 
-		float scale = Font.GLYPH_HEIGHT / _fontSize;
-		float distancePerPixel = Font.SDF_PIXEL_DIST_SCALE / 255.0f / Window.Scale;
-		float scaledDistancePerPixel = distancePerPixel * scale;
-
-		float edgeValue = Font.SDF_EDGE_VALUE / 255.0f;
-
-		Font.RenderData[] renderData = _font.GetString(Text, FontSize);
-
-		Vector2 origin = ContentPosition;
-
-		for (int i = 0; i < renderData.Length; i++)
+		if (TextSize.X > 0 && TextSize.Y > 0)
 		{
-			ref Font.RenderData data = ref renderData[i];
+			float scale = Font.GLYPH_HEIGHT / _fontSize;
+			float distancePerPixel = Font.SDF_PIXEL_DIST_SCALE / 255.0f / Window.Scale;
+			float scaledDistancePerPixel = distancePerPixel * scale;
 
-			if (data.Size == Vector2.Zero)
+			float edgeValue = Font.SDF_EDGE_VALUE / 255.0f;
+
+			Font.RenderData[] renderData = _font.GetString(Text, FontSize);
+
+			Vector2 origin = ContentPosition;
+
+			for (int i = 0; i < renderData.Length; i++)
 			{
-				continue;
-			}
+				ref Font.RenderData data = ref renderData[i];
 
-			Matrix4 matrix = Matrix4.CreateScale(data.Size.X, data.Size.Y, 1) * Matrix4.CreateTranslation(origin.X + data.TopLeft.X, origin.Y + data.TopLeft.Y, 0) * projection;
-		
-			renderer.AddUITextRequest(_font.Texture, matrix, ColorMask, Rect.FromTwoPoints(data.UVMin, data.UVMax), edgeValue - scaledDistancePerPixel/2, edgeValue + scaledDistancePerPixel/2);
+				if (data.Size == Vector2.Zero)
+				{
+					continue;
+				}
+
+				Matrix4 matrix = Matrix4.CreateScale(data.Size.X, data.Size.Y, 1) * Matrix4.CreateTranslation(origin.X + data.TopLeft.X, origin.Y + data.TopLeft.Y, 0) * projection;
+
+				renderer.AddUITextRequest(_font.Texture, matrix, ColorMask, Rect.FromTwoPoints(data.UVMin, data.UVMax), edgeValue - scaledDistancePerPixel/2, edgeValue + scaledDistancePerPixel/2);
+			}
 		}
 		
 		base.RenderOverride(renderer, ref projection);
