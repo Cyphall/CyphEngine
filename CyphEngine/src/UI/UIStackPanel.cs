@@ -21,15 +21,16 @@ public class UIStackPanel : AUIMultiContainer
 
 	protected override Vector2 MeasureOverride(Vector2 availableSize)
 	{
+		Vector2 actuallyAvailableSize = availableSize;
 		switch (Direction)
 		{
 			case Direction.LeftToRight:
 			case Direction.RightToLeft:
-				availableSize.X = float.PositiveInfinity;
+				actuallyAvailableSize.X = float.PositiveInfinity;
 				break;
 			case Direction.TopToBottom:
 			case Direction.BottomToTop:
-				availableSize.Y = float.PositiveInfinity;
+				actuallyAvailableSize.Y = float.PositiveInfinity;
 				break;
 		}
 
@@ -42,7 +43,7 @@ public class UIStackPanel : AUIMultiContainer
 		{
 			AUIElement child = Children[i];
 
-			child.Measure(availableSize);
+			child.Measure(actuallyAvailableSize);
 
 			if (previousChild != null)
 			{
