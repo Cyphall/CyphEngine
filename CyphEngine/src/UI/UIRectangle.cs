@@ -27,7 +27,7 @@ public class UIRectangle : AUISingleContainer
 
 	protected override Vector2 MeasureOverride(Vector2 availableSize)
 	{
-		Vector2 requiredSize = new Vector2(BorderThickness, BorderThickness) * 2;
+		Vector2 requiredSize = new Vector2(Math.Max(BorderThickness, CornerRadius)) * 2;
 		
 		if (Child != null)
 		{
@@ -42,7 +42,7 @@ public class UIRectangle : AUISingleContainer
 	{
 		if (Child != null)
 		{
-			Vector2 borderSize = new Vector2(BorderThickness, BorderThickness);
+			Vector2 borderSize = new Vector2(Math.Max(BorderThickness, CornerRadius));
 	
 			Child.Arrange(Rect.FromTwoPoints(finalRect.Min + borderSize, finalRect.Max - borderSize));
 		}
